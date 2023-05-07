@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html>
+
+<!-- <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script> -->
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+<head>
+    <meta charset="utf-8">
+    <title>Buy Sell Auto Trade</title>
+</head>
+
+<body style="background-color:rgba(228, 196, 107, 0.716);">
+    <h1>Buy Sell Auto Trade</h1>
+
+    <button type="button" onclick="fff()"> Reset . . . . . .Graph . . . . . . . Reset . . . . . . .Graph . . . . . .
+        Reset . . . . . .Graph . . . . . . . Reset . . . . . . . .Graph . . . . . <b></b> </button>
+    <!-- --------------------------------------------------------- -->
+    <!-- <div id="myChart" style="width:100%; max-width:600px; height:500px;"></div> -->
+
+    <div id="my_graph_function_Graph_1" style="width:100%;max-width:1380px"></div>
+    <div id="my_graph_function_Graph_2" style="width:100%;max-width:1380px"></div>
+    <div id="myPlot_candle" style="width:100%;max-width:1380px"></div>
+
+    <script>
+        //----------------------------------------------------------------
+        //   google.charts.load('current',{packages:['corechart']});
+        //   google.charts.setOnLoadCallback(drawChart);
+
+        let u, y, h = 0, ss;
+
+        let raw_Volume = [];
+
+        let yTema_of_Price = [];
+        let Tema_of_Price = [];
+
+        let yTema_of_volume = [];
+        let Tema_of_volume = [];
+
+        let raw_Volume_macd = [];
+        let raw_Volume_signal = [];
+        let yraw_Volume_signal = [];
+        let yraw_Volume_macd = [];
+
+        var yArray = [], xArray = [];
+
+        my_Get_request_Function(); //<<<<<<<-------------
+
+        //---------------------------------------------------------------------
+        function fff() {
+            h = 0;
+        }
+
+        setInterval(() => {
+
+            h = 0;
+            // my_Get_request_Function();
+
+        }, 1000);
+
+        //-----------------------------------------------------------------------
+        function percentage(num, per) {
+            return (num / 100) * per;
+        }
+        //----------------------------------------------------------------//
+        function my_graph_function_Graph_1() {
+
+            let Tema_of_price = [], Tema_of_volume = [], Volume_EMA_9 = [], T = [], ss, ss1;
+
+            let Volume_EMA_26 = [], Volume_EMA_55 = [];
+
+            let ycomplete_data_of_price_macd = [], ycomplete_data_of_price_signal = [], ycomplete_data_of_price_Histogram = [];
+
+            let pp = [0], minuse = [0], cci = [0];
+
+            for (u = 0; u < 500; u++) {
+
+                xArray[u] = u;
+                // T[u] = xArray[u];
+
+                Volume_EMA_9[u + 9] = percentage(y.Volume_EMA_9[u], 10);
+                Volume_EMA_26[u + 26] = percentage(y.Volume_EMA_26[u], 10);
+                //  Volume_EMA_55[u+55] = percentage(y.Volume_EMA_55[u],10);
+
+                ycomplete_data_of_price_macd[u + 26] = y.complete_data_of_price_macd[u];
+                ycomplete_data_of_price_signal[u + 26] = y.complete_data_of_price_signal[u];
+                ycomplete_data_of_price_Histogram[u + 26] = y.complete_data_of_price_Histogram[u];
+
+                //     ss=percentage(y.Tema_of_Price[u],90);
+                //     Tema_of_price[u]=y.Tema_of_Price[u]-ss;
+                //    //--------------------------------------------//
+                //     ss1=percentage(y.Tema_of_volume[u],98);
+                //     Tema_of_volume[u]=y.Tema_of_volume[u];//-ss1;
+
+                ss = percentage(y.cci[u], 97);
+                cci[u + 26] = (y.cci[u] - ss);
+
+                ss = percentage(y.x_All.volume[u], 95);
+                pp[u] = (y.x_All.volume[u] - ss);
+            }
+
+            // Define Data 
+
+            var data = [
+
+                { x: xArray, y: ycomplete_data_of_price_macd, mode: "line", name: 'price_macd' },
+                { x: xArray, y: ycomplete_data_of_price_signal, mode: "line", name: 'price_signal' },
+                { x: xArray, y: ycomplete_data_of_price_Histogram, mode: "line", name: 'price_Histogram' },
+
+                //  {x:xArray,y:Volume_EMA_55,mode:"line"},//name: 'Volume_EMA_55'},
+
+                //   {x:xArray,y:pp,mode:"line",name: 'Volume'},//_histogram:
+
+                { x: xArray, y: Volume_EMA_26, mode: "line", name: 'Volume_EMA_26' },
+                { x: xArray, y: Volume_EMA_9, mode: "line", name: 'Volume_EMA_9' },
+
+                //  {x:xArray,y:minuse,mode:"line",name: 'minuse'},
+
+                //    {x:xArray,y:cci,mode:"line",name: 'cci'},
+
+                // {x:xArray,y:T,mode:"line",name: 'T'},
+
+                //     {x:xArray,y:Tema_of_Price,mode:"line",name: 'Tema of price'},
+                ///  {x:xArray,y:Tema_of_volume,mode:"line",name: 'Tema of volume'},
+                //{x:xArray,y:yTema_of_volume,mode:"line",name: 'candlestick'},
+
+                //{x:xArray,y:yraw_Volume,mode:"line",name: 'raw_Volume'}
+                //{x:xArray,y:yArray,mode:"line"},
+                //{x:xaArray,y:yaArray,mode:"line"}
+                //mode:"markers"
+                //mode:"bar"
+            ];
+
+            // Define Layout 
+            var layout =
+            {
+                scale: true,
+
+                dragmode: 'zoom',
+                margin: {
+                    r: 150,
+                    t: 25,
+                    b: 40,
+                    l: 60
+                },
+
+                // showlegend: false, 
+
+                xaxis: {
+                    range: true, title: "Time per minute", gridcolor: "rgba(255,0,0,0.25)",
+                    gridwidth: 1
+                },
+
+                yaxis: {
+                    range: true, title: "Price in Thousand", gridcolor: "rgba(255,0,0,0.25)",
+                    gridwidth: 1
+                },
+                title: "my_graph_function_Graph_1 Volume_EMA",
+
+            };
+
+            Plotly.newPlot("my_graph_function_Graph_1", data, layout); // <<<<-------------
+        }
+        //----------------------------------------------------------------
+        function my_graph_function_Graph_2() {
+
+            let volume_display = [], Price = [], ss, ss1;
+
+            for (u = 0; u < 500; u++) {
+                xArray[u] = u;
+
+                //volume_display[u]=percentage(y.raw_Volume_macd[u],10);
+                //Volume_EMA_55[u+55] = percentage(y.Volume_EMA_55[u],10);
+
+                // ss=percentage(y.x_All.close[u],99);
+                // Price[u]=(y.x_All.close[u]-ss)*2;
+
+                Price[u] = y.x_All.close[u];
+
+                //  ss1=percentage(y.x_All.volume[u],99);
+                //  volume_display[u]=y.x_All.volume[u]-ss1;
+
+                // ss=percentage(y.Tema_of_Price[u],98);
+                // tn[u]=y.Tema_of_Price[u]-ss;
+            }
+
+            // Define Data
+            var data = [
+
+                //    {x:xArray,y:y.raw_Volume_signal,mode:"line",name: 'Volume_signal'},//,line: {color: 'rgb(0,0,150)'}},
+                //    {x:xArray,y:y.raw_Volume_macd,mode:"line",name: 'Volume_macd'},//line: {color: 'rgb(175,10,0)'}},
+                //    {x:xArray,y:y.x_All.volume,mode:"line",name: 'Volume'},
+                // {x:xArray,y:y.x_All.volume,mode:"line",name: 'Volume'},
+
+                { x: xArray, y: Price, mode: "line", name: 'Price' },
+
+                //    {x:xArray,y:y.complete_data_of_price_macd,mode:"line",name: 'price_macd'},//line: {color: 'rgb(125,0,0)'}},
+                //  {x:xArray,y:y.complete_data_of_price_signal,mode:"line",name: 'price_signal'},//line: {color: 'rgb(0,0,100)'}},
+
+                //  {x:xArray,y:y.Tema_of_Price,mode:"line",name: 'Tema of price'},
+                //  {x:xArray,y:y.Tema_of_volume,mode:"line",name: 'Tema of volume'},
+
+                { x: xArray, y: volume_display, mode: "line", name: 'raw_Volume_macd' },
+
+                // {x:xArray,y:yTema_of_volume,mode:"line",name: 'candlestick'},
+
+                //{x:xArray,y:yraw_Volume,mode:"line",name: 'raw_Volume'}
+                //{x:xArray,y:yArray,mode:"line"},
+                //{x:xaArray,y:yaArray,mode:"line"}
+                //mode:"markers"
+                //mode:"bar"
+            ];
+
+            // Define Layout
+            var layout =
+            {
+                scale: true,
+
+                dragmode: 'zoom',
+                margin: {
+                    r: 150,
+                    t: 25,
+                    b: 40,
+                    l: 60
+                },
+
+                //  showlegend: false, 
+
+                xaxis: {
+                    range: true, title: "Time per minute", gridcolor: "rgba(0,0,255,0.25)",
+                    gridwidth: 1
+                },
+
+                //  yaxis1: {range: true, title: "Price in Thousand",gridcolor: "rgba(0,0,255,0.25)",
+                //  gridwidth: 1}, // ,gridcolor: "rgba(255,0,0,0.25)" ,gridwidth: 10
+
+                // yaxis2: {range: true, title: "0 to 25000",gridcolor: "rgba(255,0,255,0.25)",
+                // gridwidth: 1}, // ,gridcolor: "rgba(255,0,0,0.25)" ,gridwidth: 10
+
+                yaxis3: {
+                    title: 'yaxis4 title',
+                    titlefont: { color: '#d62728' },
+                    tickfont: { color: '#d62728' },
+                    anchor: 'x',
+                    overlaying: 'y',
+                    side: 'right'
+                },
+
+                title: "my_graph_function_Graph_2"
+            };
+
+            Plotly.newPlot("my_graph_function_Graph_2", data, layout); // <<<<-------------
+        }
+        //--------------------------------------------------------------
+        function candle_graph_function(y) {
+
+            var jk = [];
+
+            for (u = 0; u < 500; u++) // 30;h++)
+            {
+                // ss=percentage(y.x_All.close[h],90);
+                // jk[h]=y.x_All.close[h]-ss;
+
+                jk[u] = u;
+            }
+
+            // var dd = [116.019997, 116.610001, 117.910004, 118.989998, 119.110001, 119.75, 119.25, 119.040001, 120, 119.989998, 119.779999, 120, 120.080002, 119.970001, 121.879997, 121.940002, 121.949997, 121.629997, 121.349998, 128.75, 128.529999, 129.080002, 130.289993, 131.529999, 132.039993, 132.419998, 132.119995, 133.289993, 135.020004, 135.509995];
+            // var hh =  [116.510002, 116.860001, 118.160004, 119.43, 119.379997, 119.93, 119.300003, 119.620003, 120.239998, 120.5, 120.089996, 120.449997, 120.809998, 120.099998, 122.099998, 122.440002, 122.349998, 121.629997, 121.389999, 130.490005, 129.389999, 129.190002, 130.5, 132.089996, 132.220001, 132.449997, 132.940002, 133.820007, 135.089996, 136.270004];
+            // var llo= [115.75, 115.809998, 116.470001, 117.940002, 118.300003, 118.599998, 118.209999, 118.809998, 118.220001, 119.709999, 119.370003, 119.730003, 119.769997, 119.5, 120.279999, 121.599998, 121.599998, 120.660004, 120.620003, 127.010002, 127.779999, 128.160004, 128.899994, 130.449997, 131.220001, 131.119995, 132.050003, 132.75, 133.25, 134.619995];
+            // var op = [115.849998, 115.919998, 116.779999, 117.949997, 118.769997, 118.739998, 118.900002, 119.110001, 118.339996, 120, 119.400002, 120.449997, 120, 119.550003, 120.419998, 121.669998, 122.139999, 120.93, 121.150002, 127.029999, 127.980003, 128.309998, 129.130005, 130.539993, 131.350006, 131.649994, 132.460007, 133.080002, 133.470001, 135.520004];
+
+            var trace1 = {
+
+                x: jk,
+
+                close: y.x_All.close,//dd,
+                decreasing: { line: { color: '#FF0000' } },
+
+                high: y.x_All.high,//hh, 
+                increasing: { line: { color: '#0000FF' } },
+                //line: {color: 'rgba(31,119,180,1)'}, 
+
+                low: y.x_All.low,// llo,
+                open: y.x_All.close,//op, 
+
+                type: 'candlestick',
+                xaxis: 'x',
+                yaxis: 'y'
+            };
+
+            var data = [trace1];
+
+            var layout = {
+                dragmode: 'zoom',
+                margin: {
+                    r: 150,
+                    t: 25,
+                    b: 40,
+                    l: 60
+                },
+
+                //  showlegend: false, 
+
+                xaxis: {
+                    autorange: true, gridcolor: "rgba(0,0,255,0.25)", gridwidth: 1
+                    //  domain: [0, 1], 
+                    //  range: ['1', '30'], 
+                    // rangeslider: {range: ['1', '30']}, 
+                    //  title: 'Date', 
+                    //  type: 'date'
+                },
+                yaxis: {
+                    autorange: true,
+                    // domain: [1,5], 
+                    range: [1, 25000], gridcolor: "rgba(0,0,255,0.25)", gridwidth: 1,
+                    // type: 'linear'
+                }
+            };
+
+            Plotly.newPlot('myPlot_candle', data, layout);
+        }
+        //------------------------------------------------------------------------
+        function my_Get_request_Function() {
+            // const ws = new WebSocket("ws://localhost:8080");
+            // const ws = new WebSocket("ws://192.168.88.191:8080");
+
+            const ws_Local = new WebSocket("ws://192.168.1.8:8081");
+            ws_Local.addEventListener("open", () => {
+               // console.log("We are connected Locally");
+                //ws.send("How are you from Local ?");
+            });
+            ws_Local.addEventListener('message', function (event) {
+                For_websocket_function();
+            });
+
+            // ws_Local.onclose = (event) => {
+            // console.log('The connection has been closed successfully.');
+            // }
+            //--------------------------------------------------------------
+            const ws = new WebSocket("ws://61.1.31.167:8081");
+            ws.addEventListener("open", () => {
+                //console.log("We are connected");
+               // ws.send("How are you?");
+            });
+            ws.addEventListener('message', function (event) {
+                For_websocket_function();
+            });
+            //--------------------------------------------------------
+            function For_websocket_function() 
+            {
+                var x = document.getElementById("myTable").rows[1].cells;
+                y = JSON.parse(event.data);
+
+                if (h == 0) {
+                    my_graph_function_Graph_1();  ///<<<----- only when button press
+                    candle_graph_function(y);
+                    my_graph_function_Graph_2();
+                    h = 1;
+                }
+                //candle_graph_function(y);
+                //my_graph_function(); /// for Real update graph 
+
+                if (y.t.close > y.x_All.close[498]) {
+                    Display("Green");
+                }
+                if (y.t.close < y.x_All.close[498]) {
+                    Display("Red");
+                }
+
+                function Display(color) {
+                    var x0 = document.getElementById("myTable").rows[1].cells;
+
+                    x0[0].innerHTML = String(y.t.close.slice(0, 8)).fontcolor(color);//String(y.x_All.close[499]).fontcolor("Green");
+                    //  document.getElementById("myTh").innerHTML = result;
+                    x0[1].innerHTML = y.macd.fontcolor(color);
+                    x0[2].innerHTML = y.signal.fontcolor(color);
+                    x0[3].innerHTML = y.histogram.fontcolor(color);
+                    x0[4].innerHTML = String(y.Peak_macd).slice(0, 9).fontcolor(color);
+                    x0[5].innerHTML = y.Down_macd.fontcolor(color);
+                    x0[6].innerHTML = y.Buy_macd_position.fontcolor(color);
+
+                    var x0 = document.getElementById("myTable").rows[3].cells;
+
+                //    x0[0].innerHTML = String(y.x_All.volume[499]).fontcolor(color); // with Buy Sell // << This changed for Admin. page
+                    x0[0].innerHTML = String(y.Volume).fontcolor(color);
+                    x0[1].innerHTML = y.Volume_macd.fontcolor(color);
+                    x0[2].innerHTML = y.Volume_signal.fontcolor(color);
+                    x0[3].innerHTML = y.Volume_histogram.fontcolor(color);
+                    x0[4].innerHTML = y.Buy;
+                    x0[5].innerHTML = y.Sell;
+                    x0[6].innerHTML = y.Total_Profit;
+                    //------------------------------------------------------------------------------------
+                    var x0 = document.getElementById("myTable").rows[5].cells;
+                    x0[0].innerHTML = y.test1;
+
+                    if (y.Buy != 0) {
+                        x0[1].innerHTML = String(y.t.close - y.Buy).slice(0, 6);
+                    }
+                    else {
+                        x0[1].innerHTML = 0;
+                    }
+
+                    x0[2].innerHTML = String(y.macd - y.Peak).slice(0, 6);
+
+                    if (y.Buy_macd_position != 0) {
+                        x0[3].innerHTML = String(y.macd - y.Buy_macd_position).slice(0, 6);
+                    }
+                    else {
+                        x0[3].innerHTML = 0;
+                    }
+
+                    x0[4].innerHTML = y.Profit_Booked_at_hit;
+                    x0[5].innerHTML = String(y.Stop_Loss_hit_at).slice(0, 8);
+                    x0[6].innerHTML = String(y.x_All.close[498]);
+
+                    var x0 = document.getElementById("myTable").rows[7].cells;
+
+                    // let rx = 50 / y.t.close;
+                    // let percent = rx * 100 ;
+                    // let macd_percentage = percentage(y.macd, percent);
+
+                    x0[0].innerHTML = String(y.percent_of_profit).slice(0, 9);
+                    x0[1].innerHTML = String(y.percent_of_stop_loss).slice(0, 9);
+                    x0[2].innerHTML = y.Stop_Loss_Hit_or_Profit_booked_or_Buy;
+                    x0[3].innerHTML = y.Sell_macd_position.fontcolor(color);
+                    x0[4].innerHTML = String(y.Volume_EMA_9[491]).slice(0, 9);
+                    x0[5].innerHTML = String(y.Volume_EMA_26[474]).slice(0, 9);
+              
+                    x0[6].innerHTML = y.macd - y.Down_macd;
+                    x0[7].innerHTML = String(y.Volume_EMA_26[474]).slice(0, 9) - String(y.Volume_EMA_9[491]).slice(0, 9);
+                   
+                    var x0 = document.getElementById("myTable").rows[9].cells;
+                    x0[0].innerHTML = y.Buy_Lock;
+                }
+
+            }
+
+        }
+//----------------------------------------------------------------------------------
+    </script>
+
+    <!-- <button type="button" onclick="my_Get_request_Function()">send_request_data_to_server_from_browser <b> </b> </button> -->
+    <!-- <button type="button" onclick="my_graph_function()">send_request_data_to_server_from_browser <b> </b> </button> -->
+    <button type="button" onclick="fff()"> Reset . . . . . .Graph . . . . . . . Reset . . . . . . .Graph . . . . . .
+        Reset . . . . . .Graph . . . . . . . Reset . . . . . . . .Graph . . . . . <b></b> </button>
+
+    <h2>Present values</h2>
+
+    <style>
+        mytable,
+        th,
+        td {
+            border: .1px solid rgb(25, 8, 81);
+        }
+    </style>
+
+    <table id="myTable" style="font-size:25px">
+
+        <tr>
+            <th> Current Price </th>
+            <th>macd</th>
+            <th>Signal</th>
+            <th>Histogram</th>
+            <th>Peak</th>
+            <th>Down_macd</th>
+            <th>Buy_macd_posit.</th>
+        </tr>
+        <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+
+        <tr magin: 5px>
+            <th>Volume</th>
+            <th>macd_volume</th>
+            <th>Signal_volume</th>
+            <th>Histogram_volume</th>
+            <th>Buy</th>
+            <th>Sell</th>
+            <th>Total_Profit</th>
+        </tr>
+
+        <tr>
+            <th style="color:hsla(234, 93%, 35%, 0.765)"></th>
+            <th style="color:rgb(203, 33, 33)"></th>
+            <th style="color:rgb(255, 255, 255)"></th>
+            <th style="color:rgb(177, 12, 83)"></th>
+            <th></th>
+            <th></th>
+            <th></th>
+
+        </tr>
+
+        <tr>
+            <th>____test1____</th>
+            <th> Current Profit Situation </th>
+            <th> MACD - Peak </th>
+            <th> MACD - Buy macd </th>
+            <th> Profit_Booked_at_hit </th>
+            <th> Stop_Loss_hit_at </th>
+            <th> Candle 498 Position </th>
+        </tr>
+
+        <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+
+        <tr>
+            <th> percent_of_profit</th>
+            <th> percent_of_stop_loss</th>
+            <th>Order Situation</th>
+            <th>Sell_macd_posit.</th>
+            <th>Volume_EMA_9</th>
+            <th>Volume_EMA_26</th>
+            <th>macd - Down_macd</th>
+            <th>Volume_EMA_26 - Volume_EMA_9</th>
+        </tr>
+
+        <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+
+
+        <tr>
+            <th>Buy_Lock</th>
+        </tr>
+        <tr>
+            <th></th>
+        </tr>
+
+        <tr magin: 5px>
+
+    </table>
+
+</body>
+
+</html>
+

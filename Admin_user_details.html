@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Testing Buy Sell Auto Trade</title>
+</head>
+
+<body style="background-color:rgba(228, 196, 107, 0.863);">
+    <h1>Testing Page</h1>
+
+    <input type="text" id="Current_Price" placeholder="Current Price">
+    <input type="text" id="MACD" placeholder="MACD">
+    <input type="text" id="PEAK_MACD" placeholder="PEAK MACD">
+    <input type="text" id="DOWN_MACD" placeholder=" DOWN MACD">
+    <input type="text" id="Volume_EMA_9" placeholder=" Volume_EMA_9">
+    <input type="text" id="Volume_EMA_26" placeholder=" Volume_EMA_26">
+    <input type="text" id="Volume" placeholder="Volume">
+    <button onclick="Button_Function()">Enter</button>
+    <button onclick="Button_Function_Reset()">Reset Values</button>
+
+    <script>
+
+        var R, t_close = 2012105.1, macd = 28.1, 
+        Peak_macd = 34, Down_macd = 18.71, Volume_EMA_9 = 355, 
+        Volume_EMA_26 = 422;
+
+        const ws_Local = new WebSocket("ws://192.168.1.6:8080");
+
+ws_Local.onopen = function (event) {
+    // ws_Local.send("client onopen Event");
+};
+
+ws_Local.addEventListener('message', function (event) {
+
+    R = JSON.parse(event.data);
+
+    var x = document.getElementById("myTable").rows[1].cells;
+    x[0].innerHTML = R.Online_client;
+
+    x = document.getElementById("myTable").rows[3].cells;
+    x[0].innerHTML = R.t.close;
+    x[1].innerHTML = R.macd;
+    x[2].innerHTML = R.Peak_macd;
+    x[3].innerHTML = R.Down_macd;
+    x[4].innerHTML = R.Volume_EMA_9[491];
+    x[5].innerHTML = R.Volume_EMA_26[474];
+    x[6].innerHTML = R.Volume;
+    //x[0].innerHTML = y;
+    // x[1].innerHTML = y.Online_client_Disconnected_with_server_count;
+    // x[1].innerHTML = y.from_client_side_data;
+    //ws_Local.send("77777777");
+});
+
+        function Button_Function_Reset()
+        {
+        t_close = 20121.1; macd = 28; Peak_macd = 22; Down_macd = 18.71; Volume_EMA_9 = 355; Volume_EMA_26 = 301;
+        volume_v = 145;
+
+        document.getElementById("Volume").value = volume_v;
+        document.getElementById("Current_Price").value = t_close;
+        document.getElementById("MACD").value  = macd;
+        document.getElementById("PEAK_MACD").value = Peak_macd;
+        document.getElementById("DOWN_MACD").value = Down_macd;
+        document.getElementById("Volume_EMA_9").value = Volume_EMA_9;
+        document.getElementById("Volume_EMA_26").value = Volume_EMA_26;
+
+        let v = {volume_v:volume_v,t_close:t_close,macd:macd,Peak_macd:Peak_macd,Down_macd:Down_macd,Volume_EMA_9:Volume_EMA_9,Volume_EMA_26:Volume_EMA_26};
+        ws_Local.send(JSON.stringify(v));
+
+            var x = document.getElementById("myTable").rows[3].cells;
+            x[0].innerHTML = R.t.close;
+            x[1].innerHTML = R.macd_macd;
+            x[2].innerHTML = R.Peak_macd;
+            x[3].innerHTML = R.Down_macd;
+            x[4].innerHTML = R.Volume_EMA_9[491];
+            x[5].innerHTML = R.Volume_EMA_26[474];
+
+            x = document.getElementById("myTable").rows[5].cells;
+            x[0].innerHTML = R.Volume;
+            x[5].innerHTML = R.check_true_or_not;
+        }
+
+        function Button_Function() 
+        {
+            volume_v = document.getElementById("Volume").value;
+            t_close = document.getElementById("Current_Price").value;
+            macd = document.getElementById("MACD").value;
+            Peak_macd = document.getElementById("PEAK_MACD").value;
+            Down_macd = document.getElementById("DOWN_MACD").value;
+            Volume_EMA_9 = document.getElementById("Volume_EMA_9").value;
+            Volume_EMA_26 = document.getElementById("Volume_EMA_26").value;
+
+            let v = {volume_v:volume_v,t_close:t_close,macd:macd,
+                Peak_macd:Peak_macd,Down_macd:Down_macd,
+                Volume_EMA_9:Volume_EMA_9,Volume_EMA_26:Volume_EMA_26};
+            
+            ws_Local.send(JSON.stringify(v));
+
+            var x = document.getElementById("myTable").rows[3].cells;
+            x[0].innerHTML = R.t.close;
+            x[1].innerHTML = R.macd_macd;
+            x[2].innerHTML = R.Peak_macd;
+            x[3].innerHTML = R.Down_macd;
+            x[4].innerHTML = R.Volume_EMA_9[491];
+            x[5].innerHTML = R.Volume_EMA_26[474];
+
+            x = document.getElementById("myTable").rows[5].cells;
+            x[0].innerHTML = R.Volume;
+            x[1].innerHTML = R.test1;
+            x[2].innerHTML = R.Pending_Transactions_status;
+            x[3].innerHTML = R.Profit_Booked_at_hit;
+            x[4].innerHTML = R.percent_of_profit;
+            x[5].innerHTML = R.check_true_or_not;
+        }
+//-----------------------------------------------------------------------
+    </script>
+
+    <!-- <button type="button" onclick="fff()"> Reset . . . . . . . . . . . . .  Reset . . . . . . . . . . . . .  Reset . . . . . . . . . . . . .  Reset . . . . . . . . . . . . .  <b></b> </button> -->
+
+    <h2>Present Customers situation</h2>
+
+    <style>
+        mytable,
+        th,
+        td {
+            border: .1px solid rgb(49, 49, 12);
+        }
+    </style>
+
+    <table id="myTable" style="font-size:25px">
+
+        <tr>
+            <th> Online </th>
+            <th>Total Off Line</th>
+        </tr>
+
+        <tr>
+            <th></th>
+            <th></th>
+        </tr>
+
+        <tr>
+            <th>Current_Price t.close </th>
+            <th>MACD</th>
+            <th>PEAK_MACD</th>
+            <th>DOWN_MACD</th>
+            <th>Volume_EMA_9</th>
+            <th>Volume_EMA_26</th>
+            
+        </tr>
+
+        <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            
+        </tr>
+
+        <tr>
+            <th>Volume</th>
+            <th>test1</th>
+            <th>Pending_Transactions_status</th>
+            <th>Profit_Booked_at_hit</th>
+            <th>percent_of_profit</th>
+            <th>check_true_or_not</th>
+        </tr>
+
+        <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+
+    </table>
+
+</body>
+
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+
+    <h1>Register</h1>
+    <!-- <form action="/form-submit" method="POST"> -->
+
+    <form action="/macd" method="get">
+        <label for="fname">macd</label><br>
+        <input type="text" placeholder="Enter Macd" name="macd">
+        <input type="submit" value="macd" /> <!-- name="macd" />  value="macd" /> -->
+    </form>
+
+    <form action="/signal" method="get">
+        <label for="fname">signal</label><br>
+        <input value = "550"type="text" placeholder="Enter Signal" name="signal">
+        <input type="submit" value="signal" /> <!-- name="macd" />  value="macd" /> -->
+    </form>
+
+    <button type="button" onclick="my_Get_request_Function()">send_request_data_to_server_from_browser</button>
+
+    <script>
+        function my_Get_request_Function() {
+            // alert('Hello world!');
+
+            // 1. Create a new XMLHttpRequest object
+            let xhr = new XMLHttpRequest();
+
+            // 2. Configure it: GET-request for the URL /article/.../load
+            xhr.open('GET', 'http://127.0.0.1:8000/value_read');
+
+            // 3. Send the request over the network
+            xhr.send();
+
+            // 4. This will be called after the response is received
+            xhr.onload = function () {
+                if (xhr.status != 200) { // analyze HTTP status of the response
+                    alert(`Error ${xhr.status}: ${xhr.statusText}`); // e.g. 404: Not Found
+                } else 
+                { // show the result
+                   // alert(`Done, got ${xhr.response.length} bytes`); // response is the server response
+                   
+                   //var ret = {type:"Fiat", model:"500", color:"white"}; // (xhr.response); // response is the server response
+                   
+                   var ret = (xhr.response);
+                   //var ret={macd:56,signal:90};ret_without_Json.Live_candles_data_input;
+
+                   var ret_without_Json = JSON.parse(ret);
+
+                   var x = document.getElementById("myTable").rows[1].cells;
+                   x[0].innerHTML = ret_without_Json.Live_candles_data_input;
+
+                }
+            };
+        }
+    </script>
+
+    <style>
+        table,
+        th,
+        td {
+            border: 1px solid rgb(5, 11, 120);
+        }
+    </style>
+
+    <h1>Present values</h1>
+
+    <table id="myTable" >
+        <tr>
+            <th>Current Price</th>
+            <th>Peak Price</th>
+            <th>Down Price</th>
+        </tr>
+
+        
+            <th id="current_Price"> </th>
+            <th>Peak_Price</th>
+            <th>Down_Price</th>
+        </tr>
+
+    </table>
+
+</body>
+
+</html>
+
+
+
